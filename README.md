@@ -37,6 +37,13 @@ docs/                   # 设计文档与说明
    ```
 4. 使用 API 进行录入/验证（后续将补充 GUI 与脚本示例）。
 
+## 自检
+- 运行脚本快速验证骨架是否可用：
+  ```bash
+  python scripts/smoke_test.py
+  ```
+  输出将包含 enroll 与 verify 的示例响应，主要用于验证配置与服务注册流程是否正常。
+
 ## 设计文档
 - `docs/face_module_design.md`：人脸识别子系统设计与跨模态总体框架。
 - `docs/implementation_plan.md`：阶段一实施计划与任务分解。

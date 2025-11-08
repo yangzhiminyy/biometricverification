@@ -5,7 +5,7 @@ Abstract base classes and datamodel definitions for biometric modalities.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable, Protocol, Sequence
+from typing import Any, Iterable, Protocol, Sequence, Tuple
 
 
 @dataclass(frozen=True)
@@ -67,4 +67,18 @@ class BiometricService(Protocol):
     def delete(self, user_id: str) -> dict[str, Any]: ...
 
     def get(self, user_id: str) -> dict[str, Any]: ...
+
+
+class EmbeddingStore(Protocol):
+    """Persistence interface for embedding vectors per user."""
+
+    modality: str
+
+    def add_embeddings(self, user_id: str, embeddings: Iterable[Any]) -> None: ...
+
+    def delete_user(self, user_id: str) -> None: ...
+
+    def query(self, embedding: Any, top_k: int = 5) -> Sequence[Tuple[str, float, dict[str, Any]]]: ...
+
+    def list_users(self) -> Sequence[str]: ...
 

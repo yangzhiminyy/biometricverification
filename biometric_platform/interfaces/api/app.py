@@ -4,48 +4,12 @@ FastAPI application exposing biometric services.
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from fastapi import FastAPI, HTTPException
 
-from ...core import BiometricServiceRegistry, load_app_config, import_string
+from ...bootstrap import initialize_registry
 
 app = FastAPI(title="Biometric Verification API", version="0.1.0")
-registry = BiometricServiceRegistry()
-
-
-def bootstrap_registry() -> None:
-    """Register available modality services based on configuration."""
-    config = load_app_config()
-
-    dataset_root = Path(config.storage.get("dataset_root", "datasets/raw"))
-
-    for modality, modality_config in config.modalities.items():
-        if not modality_config.enabled:
-            continue
-
-        verifier_cls = import_string(modality_config.verifier_class)
-        service_cls = import_string(modality_config.service_class)
-        dataset_manager = None
-
-        if modality_config.dataset_manager_class:
-            dataset_manager_cls = import_string(modality_config.dataset_manager_class)
-            modality_dataset_root = dataset_root / modality
-            dataset_manager = dataset_manager_cls(modality_dataset_root)
-
-        def factory(
-            svc_cls=service_cls,
-            ver_cls=verifier_cls,
-            dataset_manager_instance=dataset_manager,
-            modality_threshold=modality_config.threshold,
-        ):
-            verifier = ver_cls(threshold=modality_threshold)
-            return svc_cls(verifier, dataset_manager_instance)
-
-        registry.register(modality, factory)
-
-
-bootstrap_registry()
+registry, _config = initialize_registry()
 
 
 @app.get("/biometric/modalities")
