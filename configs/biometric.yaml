@@ -1,0 +1,24 @@
+environment: development
+
+modalities:
+  face:
+    enabled: true
+    verifier_class: biometric_platform.modalities.face.verifier.FaceVerifier
+    service_class: biometric_platform.modalities.face.service.FaceService
+    dataset_manager_class: null
+    model_path: null
+    threshold: 0.6
+    extras:
+      detector: mtcnn
+      recognizer: arcface
+
+logging:
+  level: INFO
+  handlers:
+    - console
+
+storage:
+  root_dir: storage
+  embeddings_dir: storage/embeddings/face
+  database_url: sqlite:///storage/biometric.db
+
