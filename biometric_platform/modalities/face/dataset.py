@@ -53,6 +53,9 @@ class FaceDatasetManager(DatasetManager):
             if source.is_file():
                 shutil.copy(source, path)
                 return
+            # Treat string as placeholder content for smoke tests.
+            path.write_text(sample, encoding="utf-8")
+            return
         raise TypeError(f"Unsupported sample type for writing: {type(sample)!r}")
 
     def list_user_samples(self, user_id: str) -> list[str]:

@@ -14,9 +14,20 @@ The script will:
 from __future__ import annotations
 
 import json
+import sys
+from pathlib import Path
 from typing import Any
 
-from biometric_platform.bootstrap import initialize_registry
+
+def _ensure_project_root_on_path() -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+
+
+_ensure_project_root_on_path()
+
+from biometric_platform.bootstrap import initialize_registry  # noqa: E402
 
 
 def run_smoke_test() -> dict[str, Any]:
@@ -32,7 +43,7 @@ def run_smoke_test() -> dict[str, Any]:
 
     return {
         "environment": config.environment,
-        "modalities": config.modalities.keys(),
+        "modalities": list(config.modalities.keys()),
         "enroll_response": enroll_response,
         "verify_response": verify_response,
     }

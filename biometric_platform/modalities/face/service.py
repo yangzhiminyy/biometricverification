@@ -4,10 +4,10 @@ Service layer for the face modality.
 
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import Any, Iterable
 
-from ...core.base import BiometricService, BiometricVerifier
-from ...core.base import DatasetManager
+from ...core.base import BiometricService, DatasetManager, BiometricVerifier
 
 
 class FaceService(BiometricService):
@@ -41,7 +41,7 @@ class FaceService(BiometricService):
             "status": "success",
             "decision": result.decision,
             "threshold": result.threshold,
-            "matches": [match.__dict__ for match in result.matches],
+            "matches": [asdict(match) for match in result.matches],
         }
 
     def delete(self, user_id: str) -> dict[str, Any]:

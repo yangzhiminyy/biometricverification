@@ -46,6 +46,8 @@ class VoiceDatasetManager(DatasetManager):
             if source.is_file():
                 shutil.copy(source, path)
                 return
+            path.write_text(sample, encoding="utf-8")
+            return
         raise TypeError(f"Unsupported voice sample type: {type(sample)!r}")
 
     def list_user_samples(self, user_id: str) -> list[str]:

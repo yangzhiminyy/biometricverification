@@ -41,12 +41,33 @@ docs/                   # 设计文档与说明
 
 > 提示：`voice` 与 `fingerprint` 模块已提供占位实现，默认在配置中禁用；若需演示，可将 `enabled` 设为 `true` 并按需调整阈值、数据目录。
 
+## API 示例
+- 录入请求：
+  ```bash
+  curl -X POST http://localhost:8000/biometric/face/enroll \
+       -H "Content-Type: application/json" \
+       -d '{"user_id": "demo_user", "samples": ["sample_frame_1", "sample_frame_2"]}'
+  ```
+- 验证请求：
+  ```bash
+  curl -X POST http://localhost:8000/biometric/face/verify \
+       -H "Content-Type: application/json" \
+       -d '{"sample": "sample_frame_1", "top_k": 3}'
+  ```
+
 ## 自检
 - 运行脚本快速验证骨架是否可用：
   ```bash
   python scripts/smoke_test.py
   ```
   输出将包含 enroll 与 verify 的示例响应，主要用于验证配置与服务注册流程是否正常。
+
+## 运行测试
+- 安装依赖后执行：
+  ```bash
+  pytest
+  ```
+  目前包括注册表与多模态占位实现的基础单元测试。
 
 ## 设计文档
 - `docs/face_module_design.md`：人脸识别子系统设计与跨模态总体框架。
