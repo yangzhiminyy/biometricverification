@@ -9,8 +9,9 @@ from .base import (
     MatchResult,
     VerificationResult,
 )
-from .config import AppConfig, load_app_config
+from .config import AppConfig, load_app_config, ModalityConfig
 from .registry import BiometricServiceRegistry
+from .utils import import_string
 
 __all__ = [
     "AppConfig",
@@ -19,7 +20,9 @@ __all__ = [
     "BiometricVerifier",
     "DatasetManager",
     "MatchResult",
+    "ModalityConfig",
     "VerificationResult",
+    "import_string",
     "load_app_config",
 ]
 

@@ -23,13 +23,23 @@ docs/                   # 设计文档与说明
 ```
 
 ## 快速开始（规划）
-1. 创建虚拟环境并安装依赖（待发布 `requirements.txt` / `pyproject.toml`）。
+1. 创建虚拟环境并安装依赖：
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate  # Windows
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
 2. 配置 `configs/biometric.yaml` 指定当前生物模态、模型路径等。
-3. 运行接口层（FastAPI/GUI）进行人脸录入与验证。
-4. 使用 `scripts/` 下工具进行数据集下载、模型训练、评估。
+3. 启动 FastAPI：
+   ```bash
+   uvicorn biometric_platform.interfaces.api.app:app --reload
+   ```
+4. 使用 API 进行录入/验证（后续将补充 GUI 与脚本示例）。
 
 ## 设计文档
 - `docs/face_module_design.md`：人脸识别子系统设计与跨模态总体框架。
+- `docs/implementation_plan.md`：阶段一实施计划与任务分解。
 
 ## 开发计划
 - 阶段一：搭建核心骨架（配置、抽象类、注册表、基础 API）。

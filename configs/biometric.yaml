@@ -5,7 +5,7 @@ modalities:
     enabled: true
     verifier_class: biometric_platform.modalities.face.verifier.FaceVerifier
     service_class: biometric_platform.modalities.face.service.FaceService
-    dataset_manager_class: null
+    dataset_manager_class: biometric_platform.modalities.face.dataset.FaceDatasetManager
     model_path: null
     threshold: 0.6
     extras:
@@ -21,4 +21,5 @@ storage:
   root_dir: storage
   embeddings_dir: storage/embeddings/face
   database_url: sqlite:///storage/biometric.db
+  dataset_root: datasets/raw
 
