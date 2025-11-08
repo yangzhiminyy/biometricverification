@@ -11,6 +11,24 @@ modalities:
     extras:
       detector: mtcnn
       recognizer: arcface
+  voice:
+    enabled: false
+    verifier_class: biometric_platform.modalities.voice.verifier.VoiceVerifier
+    service_class: biometric_platform.modalities.voice.service.VoiceService
+    dataset_manager_class: biometric_platform.modalities.voice.dataset.VoiceDatasetManager
+    model_path: null
+    threshold: 0.5
+    extras:
+      feature_extractor: deepspeaker
+  fingerprint:
+    enabled: false
+    verifier_class: biometric_platform.modalities.fingerprint.verifier.FingerprintVerifier
+    service_class: biometric_platform.modalities.fingerprint.service.FingerprintService
+    dataset_manager_class: biometric_platform.modalities.fingerprint.dataset.FingerprintDatasetManager
+    model_path: null
+    threshold: 0.7
+    extras:
+      matcher: minutiae
 
 logging:
   level: INFO

@@ -12,6 +12,8 @@ biometric_platform/
   core/                # 抽象基类、注册表、配置、任务编排
   modalities/
     face/              # 人脸识别具体实现
+    voice/             # 声纹识别占位实现
+    fingerprint/       # 指纹识别占位实现
   interfaces/          # API、GUI、CLI 接口层
   infrastructure/      # 数据存储、模型管理、日志、安全等
 configs/                # 配置文件，如 biometric.yaml
@@ -36,6 +38,8 @@ docs/                   # 设计文档与说明
    uvicorn biometric_platform.interfaces.api.app:app --reload
    ```
 4. 使用 API 进行录入/验证（后续将补充 GUI 与脚本示例）。
+
+> 提示：`voice` 与 `fingerprint` 模块已提供占位实现，默认在配置中禁用；若需演示，可将 `enabled` 设为 `true` 并按需调整阈值、数据目录。
 
 ## 自检
 - 运行脚本快速验证骨架是否可用：
