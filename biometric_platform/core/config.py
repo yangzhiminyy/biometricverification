@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class ModalityConfig(BaseModel):
@@ -32,7 +32,8 @@ class AppConfig(BaseModel):
     logging: dict[str, Any] = Field(default_factory=dict)
     storage: dict[str, Any] = Field(default_factory=dict)
 
-    @validator("modalities")
+    @field_validator("modalities")
+    @classmethod
     def ensure_default_modality(cls, value: dict[str, ModalityConfig]) -> dict[str, ModalityConfig]:
         if "face" not in value:
             raise ValueError("modalities must include 'face' configuration")

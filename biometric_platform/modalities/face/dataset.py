@@ -10,7 +10,11 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import numpy as np
-import cv2
+
+try:
+    import cv2  # type: ignore
+except ImportError:  # pragma: no cover
+    cv2 = None  # type: ignore[assignment]
 
 from ...core.base import DatasetManager
 
@@ -46,6 +50,8 @@ class FaceDatasetManager(DatasetManager):
             path.write_bytes(sample)
             return
         if isinstance(sample, np.ndarray):
+            if cv2 is None:
+                raise RuntimeError("OpenCV (cv2) is required to write numpy array samples")
             cv2.imwrite(str(path), sample)
             return
         if isinstance(sample, str):
