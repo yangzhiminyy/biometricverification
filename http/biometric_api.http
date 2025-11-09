@@ -1,0 +1,33 @@
+### List available modalities
+GET http://localhost:8000/biometric/modalities
+Accept: application/json
+
+### Enroll face samples for demo user
+POST http://localhost:8000/biometric/face/enroll
+Content-Type: application/json
+
+{
+  "user_id": "demo_user",
+  "samples": [
+    "sample_frame_1",
+    "sample_frame_2"
+  ]
+}
+
+### Verify sample against stored embeddings
+POST http://localhost:8000/biometric/face/verify
+Content-Type: application/json
+
+{
+  "sample": "sample_frame_1",
+  "top_k": 3
+}
+
+### Retrieve stored user information
+GET http://localhost:8000/biometric/face/demo_user
+Accept: application/json
+
+### Delete demo user
+DELETE http://localhost:8000/biometric/face/demo_user
+Accept: application/json
+

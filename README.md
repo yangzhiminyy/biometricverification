@@ -69,6 +69,23 @@ docs/                   # 设计文档与说明
   ```
   目前包括注册表与多模态占位实现的基础单元测试。
 
+## 辅助脚本
+- `scripts/api_curl_examples.sh`：常用 curl 调用封装。示例：
+  ```bash
+  bash scripts/api_curl_examples.sh enroll
+  bash scripts/api_curl_examples.sh verify
+  ```
+- `http/biometric_api.http`：配合 VS Code REST Client / IntelliJ HTTP Client 直接发送请求的范例。
+
+## Web 前端
+- React + Vite 项目位于 `web/frontend`。初始化后可执行：
+  ```bash
+  cd web/frontend
+  npm install           # 已执行过可跳过
+  npm run dev           # 在 http://localhost:5173 访问
+  ```
+- 可在 `web/frontend/.env` 中配置 `VITE_API_BASE_URL`（默认 `http://localhost:8000`）。
+
 ## 设计文档
 - `docs/face_module_design.md`：人脸识别子系统设计与跨模态总体框架。
 - `docs/implementation_plan.md`：阶段一实施计划与任务分解。
