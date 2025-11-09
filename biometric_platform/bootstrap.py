@@ -14,12 +14,14 @@ from .core import (
     import_string,
     load_app_config,
 )
+from .models import ModelManager
 
 
 def _create_service_factory(
     modality: str,
     modality_config: ModalityConfig,
     dataset_root: Path,
+    model_manager: ModelManager,
 ):
     """Create a lazy factory for the given modality."""
 
@@ -36,6 +38,14 @@ def _create_service_factory(
         verifier_kwargs = {}
         if modality_config.extras:
             verifier_kwargs = modality_config.extras.get("verifier_kwargs", {})
+
+        try:
+            embedding_model = model_manager.get_embedding_model(modality, modality_config)
+            verifier_kwargs.setdefault("embedder", embedding_model)
+        except ValueError:
+            # No embedding model configured; rely on verifier defaults.
+            embedding_model = None
+
         verifier = verifier_cls(threshold=modality_config.threshold, **verifier_kwargs)
 
         return service_cls(verifier, dataset_manager_instance)
@@ -56,12 +66,13 @@ def initialize_registry(config: AppConfig | None = None) -> Tuple[BiometricServi
 
     registry = BiometricServiceRegistry()
     dataset_root = Path(config.storage.get("dataset_root", "datasets/raw"))
+    model_manager = ModelManager()
 
     for modality, modality_config in config.modalities.items():
         if not modality_config.enabled:
             continue
 
-        factory = _create_service_factory(modality, modality_config, dataset_root)
+        factory = _create_service_factory(modality, modality_config, dataset_root, model_manager)
         registry.register(modality, factory)
 
     return registry, config

@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from typing import Any, Iterable, List, Optional
 
+import numpy as np
+
 from ...core.base import (
     BiometricVerifier,
     EmbeddingStore,
@@ -13,6 +15,8 @@ from ...core.base import (
     VerificationResult,
 )
 from ...infrastructure import InMemoryEmbeddingStore
+from ...models.base import EmbeddingModel
+from ...models.face.embedding import FaceEmbeddingModel
 
 
 class FaceVerifier(BiometricVerifier):
@@ -24,9 +28,11 @@ class FaceVerifier(BiometricVerifier):
         self,
         threshold: float = 0.6,
         embedding_store: Optional[EmbeddingStore] = None,
+        embedder: Optional[EmbeddingModel] = None,
     ) -> None:
         self._threshold = threshold
         self._store = embedding_store or InMemoryEmbeddingStore(modality=self.modality)
+        self._embedder = embedder or FaceEmbeddingModel()
 
     def enroll(self, user_id: str, samples: Iterable[Any]) -> None:
         # TODO: implement face preprocessing and embedding generation.
@@ -36,8 +42,12 @@ class FaceVerifier(BiometricVerifier):
         self._store.add_embeddings(user_id, embeddings)
 
     def generate_embedding(self, sample: Any) -> Any:
-        # TODO: replace with neural network inference.
-        return sample
+        if isinstance(sample, list):
+            sample_array = np.array(sample, dtype=np.float32)
+        else:
+            sample_array = np.asarray(sample, dtype=np.float32)
+        embedding = self._embedder.embed(sample_array)
+        return embedding.tolist()
 
     def match(self, sample: Any, top_k: int = 5) -> VerificationResult:
         embedding = self.generate_embedding(sample)

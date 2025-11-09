@@ -18,6 +18,7 @@
    - 接入识别模型（ArcFace/FaceNet），产出 embedding。
    - 设计 embedding 存储结构（先用本地 numpy + sqlite，后续接 FAISS）。
    - 实现 `match` 方法的相似度计算与阈值判定。
+   - 已创建 `biometric_platform/models/face/embedding.py` 作为自研/占位模型骨架，可依据此替换为预训练或自训模型。
 
 4. **数据管理模块**
    - 实现 `DatasetManager` 的人脸版本：保存原始图片、元数据、维护索引。

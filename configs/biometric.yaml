@@ -11,6 +11,7 @@ modalities:
     extras:
       detector: mtcnn
       recognizer: arcface
+      embedding_model: biometric_platform.models.face.embedding.FaceEmbeddingModel
   voice:
     enabled: false
     verifier_class: biometric_platform.modalities.voice.verifier.VoiceVerifier

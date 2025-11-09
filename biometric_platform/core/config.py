@@ -22,6 +22,7 @@ class ModalityConfig(BaseModel):
     model_path: str | None = Field(default=None)
     threshold: float = Field(default=0.5, ge=0.0, le=1.0)
     extras: dict[str, Any] = Field(default_factory=dict)
+    model: dict[str, Any] = Field(default_factory=dict)
 
 
 class AppConfig(BaseModel):
