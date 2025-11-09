@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class MatchSchema(BaseModel):
@@ -19,7 +19,8 @@ class EnrollmentRequest(BaseModel):
     user_id: str = Field(..., description="Unique user identifier")
     samples: List[str] = Field(..., description="List of sample payloads or references")
 
-    @validator("samples")
+    @field_validator("samples")
+    @classmethod
     def validate_samples(cls, value: List[str]) -> List[str]:
         if not value:
             raise ValueError("samples cannot be empty")
