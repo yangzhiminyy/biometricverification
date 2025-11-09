@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button, Card, Form, Input, Select, Space, Typography, notification, List } from "antd";
+import { useEffect, useState } from "react";
+import { App as AntdApp, Button, Card, Form, Input, Select, Space, Typography, List } from "antd";
 import { useModalities } from "../hooks/useModalities";
 import { useUserDetail } from "../hooks/useUserDetail";
 import { useDeleteUser } from "../hooks/useDeleteUser";
@@ -11,9 +11,15 @@ interface UserFormValues {
 
 export function UserDetailPage() {
   const [form] = Form.useForm<UserFormValues>();
+  const { notification } = AntdApp.useApp();
   const [selectedModality, setSelectedModality] = useState<string>();
   const [selectedUser, setSelectedUser] = useState<string>();
-  const { data: modalitiesData, isLoading: loadingModalities } = useModalities();
+  const {
+    data: modalitiesData,
+    isLoading: loadingModalities,
+    isError: modalitiesError,
+    error: modalitiesErrorObj,
+  } = useModalities();
 
   const { data: userData, isFetching } = useUserDetail(
     selectedModality,
@@ -42,7 +48,22 @@ export function UserDetailPage() {
     }
   };
 
-  const modalities = modalitiesData?.modalities ?? [];
+  useEffect(() => {
+    if (modalitiesError && modalitiesErrorObj) {
+      notification.error({
+        message: "Failed to load modalities",
+        description: modalitiesErrorObj.message,
+      });
+    }
+  }, [modalitiesError, modalitiesErrorObj]);
+
+  const modalities = modalitiesData?.modalities?.length ? modalitiesData.modalities : ["face"];
+
+  useEffect(() => {
+    if (!form.getFieldValue("modality") && modalities.length > 0) {
+      form.setFieldsValue({ modality: modalities[0] });
+    }
+  }, [modalities, form]);
 
   return (
     <Space direction="vertical" style={{ width: "100%" }} size="large">

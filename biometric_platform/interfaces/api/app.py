@@ -5,6 +5,7 @@ FastAPI application exposing biometric services.
 from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from ...bootstrap import initialize_registry
 from .schemas import (
@@ -19,6 +20,21 @@ from .schemas import (
 
 app = FastAPI(title="Biometric Verification API", version="0.1.0")
 registry, _config = initialize_registry()
+
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins + ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/biometric/modalities", response_model=ModalitiesResponse)

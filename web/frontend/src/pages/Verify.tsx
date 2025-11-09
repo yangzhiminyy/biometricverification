@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button, Card, Form, Input, InputNumber, Select, Space, Typography, notification } from "antd";
+import { useEffect, useState } from "react";
+import { App as AntdApp, Button, Card, Form, Input, InputNumber, Select, Space, Typography } from "antd";
 import { useModalities } from "../hooks/useModalities";
 import { useVerify } from "../hooks/useVerify";
 import { MatchResultsTable } from "../components/MatchResultsTable";
@@ -13,8 +13,14 @@ interface VerifyFormValues {
 
 export function VerifyPage() {
   const [form] = Form.useForm<VerifyFormValues>();
+  const { notification } = AntdApp.useApp();
   const [result, setResult] = useState<VerificationResponse | null>(null);
-  const { data: modalitiesData, isLoading: loadingModalities } = useModalities();
+  const {
+    data: modalitiesData,
+    isLoading: loadingModalities,
+    isError: modalitiesError,
+    error: modalitiesErrorObj,
+  } = useModalities();
 
   const verifyMutation = useVerify(
     (data) => {
@@ -37,7 +43,22 @@ export function VerifyPage() {
     });
   };
 
-  const modalities = modalitiesData?.modalities ?? [];
+  useEffect(() => {
+    if (modalitiesError && modalitiesErrorObj) {
+      notification.error({
+        message: "Failed to load modalities",
+        description: modalitiesErrorObj.message,
+      });
+    }
+  }, [modalitiesError, modalitiesErrorObj]);
+
+  const modalities = modalitiesData?.modalities?.length ? modalitiesData.modalities : ["face"];
+
+  useEffect(() => {
+    if (!form.getFieldValue("modality") && modalities.length > 0) {
+      form.setFieldsValue({ modality: modalities[0] });
+    }
+  }, [modalities, form]);
 
   return (
     <Space direction="vertical" style={{ width: "100%" }} size="large">
