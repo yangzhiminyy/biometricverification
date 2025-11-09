@@ -28,6 +28,6 @@ GET http://localhost:8000/biometric/face/demo_user
 Accept: application/json
 
 ### Delete demo user
-DELETE http://localhost:8000/biometric/face/demo_user
+DELETE http://localhost:8000/biometric/face/demo_user1
 Accept: application/json
 

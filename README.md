@@ -85,7 +85,7 @@ docs/                   # 设计文档与说明
   npm run dev           # 在 http://localhost:5173 访问
   ```
 - 可在 `web/frontend/.env` 中配置 `VITE_API_BASE_URL`（默认 `http://localhost:8000`）。
-- 录入页面已支持调用摄像头拍照并直接提交至后端，可在浏览器授权后体验。
+- 录入、验证页面已支持调用摄像头拍照并直接提交至后端，可在浏览器授权后体验。
 
 ## 设计文档
 - `docs/face_module_design.md`：人脸识别子系统设计与跨模态总体框架。
