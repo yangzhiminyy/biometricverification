@@ -76,6 +76,7 @@ def main() -> None:
     parser.add_argument("--config", type=str, default="training/configs/face_train.yaml", help="Path to config YAML")
     parser.add_argument("--arrow-dir", type=str, default="datasets/external/lfw_pairs", help="Arrow dataset directory")
     parser.add_argument("--split", type=str, default="train", help="Dataset split (train/test)")
+    parser.add_argument("--eval-only", action="store_true", help="Evaluate on dataset without training")
     args = parser.parse_args()
 
     cfg = load_config(args.config)
@@ -104,30 +105,35 @@ def main() -> None:
         num_workers=data_cfg.get("num_workers", 4),
     )
 
-    optimizer = optim.Adam(wrapper.parameters(), lr=train_cfg["learning_rate"], weight_decay=train_cfg["weight_decay"])
+    optimizer = None if args.eval_only else optim.Adam(wrapper.parameters(), lr=train_cfg["learning_rate"], weight_decay=train_cfg["weight_decay"])
     margin = train_cfg.get("contrastive_margin", 1.0)
 
-    for epoch in range(train_cfg["epochs"]):
-        wrapper.train()
+    for epoch in range(1 if args.eval_only else train_cfg["epochs"]):
+        wrapper.train(not args.eval_only)
         epoch_loss = 0.0
-        for img0, img1, label in dataloader:
-            img0 = img0.to(device)
-            img1 = img1.to(device)
-            label = label.to(device)
+        with torch.set_grad_enabled(not args.eval_only):
+            for img0, img1, label in dataloader:
+                img0 = img0.to(device)
+                img1 = img1.to(device)
+                label = label.to(device)
 
-            emb0 = wrapper(img0)
-            emb1 = wrapper(img1)
+                emb0 = wrapper(img0)
+                emb1 = wrapper(img1)
 
-            loss = contrastive_loss(emb0, emb1, label, margin)
+                loss = contrastive_loss(emb0, emb1, label, margin)
 
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+                if not args.eval_only:
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
 
-            epoch_loss += loss.item()
+                epoch_loss += loss.item()
 
         avg_loss = epoch_loss / len(dataloader)
-        print(f"Epoch {epoch + 1}/{train_cfg['epochs']} - Loss: {avg_loss:.4f}")
+        if args.eval_only:
+            print(f"Evaluation - Loss: {avg_loss:.4f}")
+        else:
+            print(f"Epoch {epoch + 1}/{train_cfg['epochs']} - Loss: {avg_loss:.4f}")
 
 
 if __name__ == "__main__":
