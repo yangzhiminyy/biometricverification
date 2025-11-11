@@ -1,0 +1,31 @@
+# Default training configuration for face embedding model
+experiment:
+  name: face_baseline
+  output_dir: outputs/face_baseline
+
+data:
+  arrow_dir: datasets/external/lfw_pairs
+  split: train
+  batch_size: 64
+  num_workers: 4
+  image_columns:
+    - img_0
+    - img_1
+  label_column: pair
+
+model:
+  class: biometric_platform.models.face.pretrained.PretrainedFaceEmbedding
+  params:
+    device: cpu
+    pretrained: vggface2
+
+training:
+  epochs: 10
+  learning_rate: 0.001
+  optimizer: adam
+  weight_decay: 0.0001
+
+logging:
+  interval_steps: 50
+  save_every_epochs: 1
+

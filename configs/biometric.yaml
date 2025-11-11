@@ -9,9 +9,16 @@ modalities:
     model_path: null
     threshold: 0.6
     extras:
-      detector: mtcnn
-      recognizer: arcface
-      embedding_model: biometric_platform.models.face.embedding.FaceEmbeddingModel
+      detector:
+        class: biometric_platform.models.face.detector.MTCNNDetector
+        params:
+          image_size: 160
+          device: cpu
+    model:
+      class: biometric_platform.models.face.pretrained.PretrainedFaceEmbedding
+      params:
+        device: cpu
+        pretrained: vggface2
   voice:
     enabled: false
     verifier_class: biometric_platform.modalities.voice.verifier.VoiceVerifier
@@ -30,7 +37,6 @@ modalities:
     threshold: 0.7
     extras:
       matcher: minutiae
-
 logging:
   level: INFO
   handlers:

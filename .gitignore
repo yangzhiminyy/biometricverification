@@ -1,5 +1,6 @@
 .venv/
 .git/
+datasets/
 **/__pycache__/
 **/*.pyc
 **/*.log

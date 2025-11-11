@@ -120,7 +120,7 @@
     - `match(embedding, top_k=5) -> List[MatchResult]`
     - `enroll(user_id, images)`
     - `delete(user_id)`
-  - 可插拔检测器（MTCNN/RetinaFace）与识别器（FaceNet/ArcFace）。使用配置选择。
+  - 当前实现默认集成 MTCNN（检测对齐）+ 预训练 ArcFace (facenet-pytorch)；可通过配置替换为其他检测/识别组合。
 - **FaceDatasetManager**  
   - 管理原始图像、预处理数据集、训练/验证划分。
   - 负责数据清洗、增强、命名规范、元数据记录。

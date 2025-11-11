@@ -11,4 +11,5 @@ torchvision>=0.16.0
 facenet-pytorch==2.6.0
 faiss-cpu==1.7.4; python_version < "3.11" and platform_system != "Windows"
 pytest==8.2.2
+Pillow>=10.2.0,<10.3.0
 

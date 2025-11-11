@@ -26,25 +26,38 @@ def _create_service_factory(
     """Create a lazy factory for the given modality."""
 
     # The dataset manager can be relatively heavy; instantiate lazily inside the factory.
+    dataset_manager_instance = None
+    if modality_config.dataset_manager_class:
+        dataset_manager_cls = import_string(modality_config.dataset_manager_class)
+        dataset_manager_instance = dataset_manager_cls(dataset_root / modality)
+
+    embedding_model = None
+    try:
+        embedding_model = model_manager.get_embedding_model(modality, modality_config)
+    except ValueError:
+        embedding_model = None
+
+    detector_instance = None
+    detector_cfg = modality_config.extras.get("detector") if modality_config.extras else None
+    if detector_cfg:
+        detector_class = detector_cfg.get("class")
+        detector_params = detector_cfg.get("params", {})
+        if detector_class:
+            detector_cls = import_string(detector_class)
+            detector_instance = detector_cls(**detector_params)
+
     def factory():
         verifier_cls = import_string(modality_config.verifier_class)
         service_cls = import_string(modality_config.service_class)
-
-        dataset_manager_instance = None
-        if modality_config.dataset_manager_class:
-            dataset_manager_cls = import_string(modality_config.dataset_manager_class)
-            dataset_manager_instance = dataset_manager_cls(dataset_root / modality)
 
         verifier_kwargs = {}
         if modality_config.extras:
             verifier_kwargs = modality_config.extras.get("verifier_kwargs", {})
 
-        try:
-            embedding_model = model_manager.get_embedding_model(modality, modality_config)
+        if embedding_model is not None:
             verifier_kwargs.setdefault("embedder", embedding_model)
-        except ValueError:
-            # No embedding model configured; rely on verifier defaults.
-            embedding_model = None
+        if detector_instance is not None:
+            verifier_kwargs.setdefault("detector", detector_instance)
 
         verifier = verifier_cls(threshold=modality_config.threshold, **verifier_kwargs)
 

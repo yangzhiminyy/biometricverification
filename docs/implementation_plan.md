@@ -34,6 +34,7 @@
    - 编写单元测试（pytest）：验证服务注册表、配置加载、FaceService 接口。
    - 更新 `README.md` 的运行说明，记录常见问题（依赖安装、缺失模型）。
    - 在 `docs/` 中补充模型训练计划、数据集下载说明。
+    - 新增 `training/` 目录并准备 `train_face.py`、`datasets/face_dataset.py`、`configs/face_train.yaml`，作为训练脚手架。
 
 ## 3. 里程碑
 - **Milestone 1**：API 可启动，使用占位 embedding 成功执行录入/验证。
@@ -51,6 +52,7 @@
 - **数据流水线强化**：构建数据增强、对齐、质量控制步骤；提供 CLI/GUI 批量导入工具。
 - **硬件与性能优化**：支持 GPU 推理、批量处理及异步任务，评估内存与延迟指标。
 - **安全合规扩展**：引入加密、访问控制、审计日志及数据生命周期管理。
+- 使用 pairs 数据集（如 Hugging Face LFW）可通过 `LFWPairsDataset` 和 `train_face.py` 的 siamese 流程直接训练对比模型，不再依赖身份目录结构。
 
 ---
 

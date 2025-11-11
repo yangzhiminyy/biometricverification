@@ -87,6 +87,18 @@ docs/                   # 设计文档与说明
 - 可在 `web/frontend/.env` 中配置 `VITE_API_BASE_URL`（默认 `http://localhost:8000`）。
 - 录入、验证页面已支持调用摄像头拍照并直接提交至后端，可在浏览器授权后体验。
 
+## 模型训练
+- 准备人脸训练数据：
+  ```bash
+  python training/scripts/prepare_face_dataset.py \
+    --raw-root datasets/raw/face \
+    --processed-root datasets/processed/face
+  ```
+- 运行占位训练脚本（后续可替换为真实模型）：
+  ```bash
+  python training/train_face.py --config training/configs/face_train.yaml
+  ```
+
 ## 设计文档
 - `docs/face_module_design.md`：人脸识别子系统设计与跨模态总体框架。
 - `docs/implementation_plan.md`：阶段一实施计划与任务分解。
